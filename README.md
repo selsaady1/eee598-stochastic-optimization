@@ -4,10 +4,14 @@
 
 ![Python](https://img.shields.io/badge/Python-0a7?style=flat-square) ![NumPy](https://img.shields.io/badge/NumPy-0a7?style=flat-square) ![Matplotlib](https://img.shields.io/badge/Matplotlib-0a7?style=flat-square) ![Stochastic gradient descent with momentum](https://img.shields.io/badge/Stochastic_gradient_descent_with_momentum-0a7?style=flat-square) ![Two-sample t-tests](https://img.shields.io/badge/Two--sample_t--tests-0a7?style=flat-square) 
 
+![Stochastic Optimization](images/diagram.png)
+
 ### 🌐 Live project page → **https://selsaady1.github.io/eee598-stochastic-optimization/**
 
 ## Overview
 A graduate stochastic optimization project (EEE 598, ASU) comparing two probability distribution matching objectives: Forward Kullback-Leibler (FKL) and Reverse Kullback-Leibler (RKL) divergence. A parameterized softmax student distribution is trained via mini-batch SGD with momentum to match a fixed multimodal teacher over 100 classes. The study runs 20 independent trials per configuration to evaluate convergence, stability, and distribution quality, with statistical significance testing of the results.
+
+**Highlight:** Mode coverage: FKL 95% vs RKL 68% (p < 0.001) across 20 independent runs
 
 **Highlight:** Mode coverage: FKL 95% vs RKL 68% (p < 0.001) across 20 independent runs
 
@@ -31,9 +35,13 @@ The distribution matching problem was framed as optimizing a softmax student dis
 ## Repository Structure
 ```
 .gitignore
+.nojekyll
 LICENSE
 README.md
 docs/Final_Report_EEE598.docx
+images/diagram.png
+images/diagram.svg
+index.html
 ```
 
 ## Results
