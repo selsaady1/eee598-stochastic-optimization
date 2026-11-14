@@ -1,57 +1,51 @@
-# Stochastic Optimization
+<p align="center"><img src="images/banner.svg" alt="Forward vs. Reverse KL Under SGD" width="100%"></p>
 
-> Empirical study of Forward-KL vs Reverse-KL divergence under stochastic gradient descent
+# Forward vs. Reverse KL Under SGD
 
-![Python](https://img.shields.io/badge/Python-0a7?style=flat-square) ![NumPy](https://img.shields.io/badge/NumPy-0a7?style=flat-square) ![Matplotlib](https://img.shields.io/badge/Matplotlib-0a7?style=flat-square) ![Stochastic gradient descent with momentum](https://img.shields.io/badge/Stochastic_gradient_descent_with_momentum-0a7?style=flat-square) ![Two-sample t-tests](https://img.shields.io/badge/Two--sample_t--tests-0a7?style=flat-square) 
+> Mean-seeking or mode-seeking? Two ways to match a distribution, the same noisy optimizer, and very different behavior.
 
-![Stochastic Optimization](images/diagram.png)
+**EEE 598 · Stochastic Optimization · Fall 2025** · Individual project · Applied AI
 
-### 🌐 Live project page → **https://selsaady1.github.io/eee598-stochastic-optimization/**
+| **100** | **80** | **20** | **2** |
+|:-:|:-:|:-:|:-:|
+| classes in the teacher | optimization runs | seeds per configuration | batch sizes (32, 128) |
 
-## Overview
-A graduate stochastic optimization project (EEE 598, ASU) comparing two probability distribution matching objectives: Forward Kullback-Leibler (FKL) and Reverse Kullback-Leibler (RKL) divergence. A parameterized softmax student distribution is trained via mini-batch SGD with momentum to match a fixed multimodal teacher over 100 classes. The study runs 20 independent trials per configuration to evaluate convergence, stability, and distribution quality, with statistical significance testing of the results.
+**Full case study:** [saifelsaady.com/research/kl-divergence-sgd](https://saifelsaady.com/research/kl-divergence-sgd) · **Project page:** [selsaady1.github.io/eee598-stochastic-optimization](https://selsaady1.github.io/eee598-stochastic-optimization/)
 
-**Highlight:** Mode coverage: FKL 95% vs RKL 68% (p < 0.001) across 20 independent runs
+## The question
 
-**Highlight:** Mode coverage: FKL 95% vs RKL 68% (p < 0.001) across 20 independent runs
+KL divergence is not symmetric. Forward KL punishes a model for missing anything the target covers, so it spreads out (mean-seeking). Reverse KL punishes it for putting mass where the target has none, so it locks onto a few modes (mode-seeking). Knowledge distillation usually uses the first and variational inference the second. This study isolates how that choice interacts with the noise of mini-batch SGD.
 
-## Key Achievements
-- Designed a controlled experiment isolating optimization dynamics: a fixed multimodal teacher (four modes at positions 20, 40, 60, 80 over 100 classes) and a softmax-parameterized student trained from 10,000 teacher samples
-- Ran 80 total optimization runs (20 seeds x 2 objectives x 2 batch sizes) with momentum SGD (lr=0.01, momentum=0.9, 2,000 iterations) for statistically rigorous comparison
-- Empirically confirmed mean-seeking vs mode-seeking theory: FKL captured 95 +/- 3 percent of teacher modes while RKL captured only 68 +/- 8 percent
-- Validated findings with paired two-sample t-tests, finding highly significant differences in mode coverage (p < 0.001), final loss (p = 0.003), and total variation distance (p = 0.007)
-- Quantified stochasticity sensitivity, showing RKL is more affected by mini-batch noise than FKL and that larger batch sizes (128 vs 32) reduce variance for both objectives
+## How it works
 
-## Approach
-The distribution matching problem was framed as optimizing a softmax student distribution against a fixed multimodal categorical teacher using mini-batch stochastic gradient descent with momentum. Stochasticity was introduced by sampling mini-batches (size 32 and 128) from 10,000 teacher-drawn samples rather than the analytical distribution. Convergence was defined as the iteration where loss fell below 1.05x the run minimum, and performance was assessed via iterations-to-convergence, final loss, total variation distance, and mode coverage. Twenty independent runs per configuration with paired t-tests provided statistical rigor.
+1. **Teacher.** A fixed multimodal categorical distribution over 100 classes with four modes, sampled 10,000 times.
+2. **Student.** A softmax-parameterized distribution trained with mini-batch SGD with momentum, so every gradient step sees only a noisy sample of the teacher.
+3. **Design.** Two objectives × two batch sizes (32 and 128) × 20 independent seeds: 80 runs, everything else held fixed.
+4. **Measures.** Iterations to convergence, final loss, total-variation distance to the teacher and mode coverage, compared with two-sample t-tests.
 
-## Tools & Technologies
-- Python
-- NumPy
-- Matplotlib
-- Stochastic gradient descent with momentum
-- Two-sample t-tests
+## What it found
 
-## Repository Structure
-```
-.gitignore
-.nojekyll
-LICENSE
-README.md
-docs/Final_Report_EEE598.docx
-images/diagram.png
-images/diagram.svg
-index.html
-```
+- The results lined up with the theory: forward KL spread its mass across the teacher's modes, while reverse KL concentrated on fewer of them.
+- Reverse KL was the more sensitive of the two to mini-batch noise.
+- Larger batches reduced run-to-run variance for both objectives.
 
-## Results
-Forward-KL converged more steadily (1,450 +/- 80 iterations, final loss 0.032 +/- 0.004, TV distance 0.075) with comprehensive mode coverage, while Reverse-KL converged faster but with higher variance (1,200 +/- 220 iterations, final loss 0.041 +/- 0.010, TV distance 0.092) and selective mode coverage. Differences in mode coverage, final loss, and TV distance were statistically significant; full numbers, figures, and tables are in docs/Final_Report_EEE598.docx.
+## Takeaway
 
-## Deliverable
-See [`docs/Final_Report_EEE598.docx`](docs/Final_Report_EEE598.docx).
+> Choosing a divergence is choosing a failure mode. If missing a mode is costly, forward KL is the safer default under noisy gradients.
+
+## In this repository
+
+| Path | What it is |
+|---|---|
+| [`docs/Final_Report_EEE598.docx`](docs/Final_Report_EEE598.docx) | Final report (Word) |
+
+## Tools
+
+Python · NumPy · Matplotlib · SGD with momentum · t-tests
 
 ## License
-MIT — see [`LICENSE`](LICENSE).
+
+MIT, see [`LICENSE`](LICENSE).
 
 ---
-_Part of [Saif Elsaady's engineering portfolio](https://selsaady1.github.io/portfolio/). Deliverables only — routine homework/quizzes/exams excluded._
+_Part of [Saif Elsaady's portfolio](https://saifelsaady.com/projects). Deliverables only; routine homework, quizzes and exams are excluded._
